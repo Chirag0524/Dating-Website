@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pick a Date ☕</title>
+  <link rel="stylesheet" href="css/date-styles.css">
+</head>
+<body>
+  <canvas id="heartsCanvas" class="hearts-canvas"></canvas>
+  <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+
+  <div class="main-container">
+    <h1 class="heading">Select a Date for Our Coffee ☕💖</h1>
+    <p class="subtext">Coffee, laughter, and you—the perfect recipe for a beautiful day. 💛</p>
+
+    <input type="date" id="datePicker" class="date-picker">
+    <button id="confirmBtn" class="btn btn-yes">Confirm ✅</button>
+
+    <p id="statusMsg" class="status-msg"></p>
+    <p id="hurrayMsg" class="hurray-msg">🎉 Hurray! Confirmation sent to mail! 🎉</p>
+  </div>
+
+  <script src="js/date.js"></script>
+  <script src="js/hearts.js"></script>
+  <script src="js/confetti.js"></script>
+</body>
+</html>

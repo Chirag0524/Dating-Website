@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Diwali, Pretty! 🪔</title>
+  <link rel="stylesheet" href="css/diwali-styles.css">
+</head>
+<body>
+  <canvas id="fireworksCanvas" class="fireworks-canvas"></canvas>
+  <canvas id="heartsCanvas" class="fireworks-canvas"></canvas>
+
+  <div class="main-container">
+    <h1 class="heading">Happy Diwali, Pretty! 🪔✨</h1>
+    <p class="subtext">
+      This year, God has gifted me the most wonderful person — and that’s you.<br>
+      May your Diwali be filled with light, laughter, and endless happiness. ❤️🎇
+    </p>
+    <button id="nextBtn" class="btn btn-next">Next ➡️</button>
+  </div>
+
+  <script src="js/diwali-fireworks.js"></script>
+  <script src="js/diwali-hearts.js"></script>
+  <script>
+    document.getElementById("nextBtn").addEventListener("click", () => {
+      window.location.href = "main.html";
+    });
+  </script>
+</body>
+</html>

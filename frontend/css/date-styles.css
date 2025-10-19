@@ -1,0 +1,122 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Great+Vibes&display=swap");
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  background: radial-gradient(circle at top, #fff7f0, #ffe0c2);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.fireworks-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.main-container {
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(145deg, #fff7e6, #ffd699);
+  padding: 3rem 2rem;
+  border-radius: 30px;
+  max-width: 600px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  border: 2px solid #fbbf24;
+  animation: float 6s ease-in-out infinite;
+}
+
+.heading {
+  font-family: "Great Vibes", cursive;
+  font-size: 2.8rem;
+  color: #d97706;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 6px rgba(255,165,0,0.5);
+}
+
+.subtext {
+  font-size: 1.2rem;
+  color: #b45309;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.date-picker {
+  padding: 0.8rem 1rem;
+  font-size: 1.1rem;
+  border-radius: 10px;
+  border: 2px solid #fbbf24;
+  margin-bottom: 2rem; /* more space below calendar */
+  display: block;
+  width: 60%;
+  max-width: 250px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.btn-yes {
+  background-color: #ec4899;
+  color: white;
+  border: none;
+  padding: 0.9rem 1.5rem;
+  font-size: 1.2rem;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 500;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  display: block;       /* make it full block */
+  margin: 0 auto;       /* center horizontally */
+  margin-bottom: 1.5rem; /* spacing below button */
+}
+
+.status-msg {
+  margin-top: 1rem;
+  font-weight: 600;
+  color: #ef4444;
+}
+
+.hurray-msg {
+  margin-top: 2rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #10b981;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+
+.btn-yes:hover {
+  background-color: #db2777;
+  transform: scale(1.05);
+}
+
+.main-container:hover {
+  box-shadow: 0 0 40px 10px rgba(255, 140, 0, 0.7), 0 20px 40px rgba(0,0,0,0.3);
+}
+
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.hearts-canvas,
+.confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;  /* important! so it won't block clicks */
+  z-index: 0;            /* behind main container */
+}
