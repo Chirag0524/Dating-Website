@@ -1,86 +1,70 @@
-  import express from "express";
-  import nodemailer from "nodemailer";
-  import cors from "cors";
-  import dotenv from "dotenv";
-  import path from "path";
-  import { fileURLToPath } from "url";
+import express from "express";
+import sgMail from "@sendgrid/mail";
+import cors from "cors";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 
-  dotenv.config();
-  const app = express();
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
+dotenv.config();
+const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-  // Middleware
-  app.use(cors());
-  app.use(express.json());
-  app.use(express.static(path.join(__dirname, "public")));
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
 
-  // Nodemailer transporter (Gmail with App Password)
-const transporter = nodemailer.createTransport({
-  host: "smtp.mail.yahoo.com",
-  port: 465,          // SSL port
-  secure: true,       // true for SSL
-  auth: {
-    user: process.env.EMAIL_USER.trim(),
-    pass: process.env.EMAIL_PASS.trim(), // Yahoo App Password
-  },
-});
+// Set SendGrid API Key
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-  // Verify transporter on startup
-  transporter.verify((error, success) => {
-    if (error) {
-      console.error("Email transporter error:", error);
-    } else {
-      console.log("Email transporter ready");
-    }
-  });
+// HTML email template
+function getEmailTemplate(date) {
+  return `
+    <div style="font-family: Poppins, sans-serif; color:#333; line-height:1.6; max-width:600px; margin:auto; padding:20px; border-radius:10px; background-color:#fef6f6; box-shadow:0 5px 15px rgba(0,0,0,0.1);">
+      <h2 style="color:#ec4899;">Date Confirmation ☕</h2>
+      <p>Hello!</p>
+      <p>Thank you for confirming. Your coffee date has been scheduled on:</p>
+      <p style="font-weight:bold; font-size:1.2rem;">${date}</p>
+      <p>Looking forward to a warm conversation and good vibes! ✨</p>
+      <br>
+      <p style="color:#888;">- Sent with 💖 from your friendly app</p>
+    </div>
+  `;
+}
 
-  // HTML email template
-  function getEmailTemplate(date) {
-    return `
-      <div style="font-family: Poppins, sans-serif; color:#333; line-height:1.6; max-width:600px; margin:auto; padding:20px; border-radius:10px; background-color:#fef6f6; box-shadow:0 5px 15px rgba(0,0,0,0.1);">
-        <h2 style="color:#ec4899;">Date Confirmation ☕</h2>
-        <p>Hello!</p>
-        <p>Thank you for confirming. Your coffee date has been scheduled on:</p>
-        <p style="font-weight:bold; font-size:1.2rem;">${date}</p>
-        <p>Looking forward to a warm conversation and good vibes! ✨</p>
-        <br>
-        <p style="color:#888;">- Sent with 💖 from your friendly app</p>
-      </div>
-    `;
+// Routes for HTML files
+app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
+app.get("/main.html", (req, res) => res.sendFile(path.join(__dirname, "public", "main.html")));
+app.get("/date.html", (req, res) => res.sendFile(path.join(__dirname, "public", "date.html")));
+
+// Send-mail API using SendGrid
+app.post("/send-mail", async (req, res) => {
+  const { selectedDate } = req.body;
+  if (!selectedDate) {
+    return res.status(400).json({ success: false, message: "Date is required" });
   }
 
-  // Routes for HTML files
-  app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
-  app.get("/main.html", (req, res) => res.sendFile(path.join(__dirname, "public", "main.html")));
-  app.get("/date.html", (req, res) => res.sendFile(path.join(__dirname, "public", "date.html")));
+  const msg = {
+    to: "chiragadwani24@gmail.com",        // recipient
+    cc: "chiragadwani00@gmail.com",        // CC yourself
+    from: "chiragadwani00@gmail.com",      // verified sender in SendGrid
+    subject: "Date Confirmation ☕",
+    html: getEmailTemplate(selectedDate),
+  };
 
-  // Send-mail API
-  app.post("/send-mail", async (req, res) => {
-    const { selectedDate } = req.body;
-    if (!selectedDate) {
-      return res.status(400).json({ success: false, message: "Date is required" });
-    }
+  try {
+    await sgMail.send(msg);
+    res.json({ success: true, message: "Email sent successfully!" });
+  } catch (error) {
+    console.error("Failed to send email:", error);
+    res.status(500).json({ success: false, message: "Failed to send email" });
+  }
+});
 
-    try {
-      await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: "chiragadwani24@gmail.com", // recipient
-        cc: "chiragadwani00@gmail.com",      // CC yourself
-        subject: "Date Confirmation ☕",
-        html: getEmailTemplate(selectedDate),
-      });
+// Catch-all route
+app.get("*", (req, res) => res.redirect("/"));
 
-      res.json({ success: true, message: "Email sent successfully!" });
-    } catch (error) {
-      console.error("Failed to send email:", error);
-      res.status(500).json({ success: false, message: "Failed to send email" });
-    }
-  });
-
-  // Catch-all route
-  app.get("*", (req, res) => res.redirect("/"));
-
-  // Start server
-  const PORT = process.env.PORT || 10000;
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Start server
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
