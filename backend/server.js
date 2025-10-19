@@ -1,86 +1,86 @@
-import express from "express";
-import nodemailer from "nodemailer";
-import cors from "cors";
-import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
+  import express from "express";
+  import nodemailer from "nodemailer";
+  import cors from "cors";
+  import dotenv from "dotenv";
+  import path from "path";
+  import { fileURLToPath } from "url";
 
-dotenv.config();
-const app = express();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+  dotenv.config();
+  const app = express();
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
+  // Middleware
+  app.use(cors());
+  app.use(express.json());
+  app.use(express.static(path.join(__dirname, "public")));
 
-// Nodemailer transporter (Gmail with App Password)
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,           // use 587 for TLS
-  secure: false,       // false for TLS
-  auth: {
-    user: process.env.EMAIL_USER,  // your Gmail
-    pass: process.env.EMAIL_PASS,  // App Password
-  },
-});
+  // Nodemailer transporter (Gmail with App Password)
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,           // use 587 for TLS
+    secure: false,       // false for TLS
+    auth: {
+      user: process.env.EMAIL_USER,  // your Gmail
+      pass: process.env.EMAIL_PASS,  // App Password
+    },
+  });
 
-// Verify transporter on startup
-transporter.verify((error, success) => {
-  if (error) {
-    console.error("Email transporter error:", error);
-  } else {
-    console.log("Email transporter ready");
-  }
-});
+  // Verify transporter on startup
+  transporter.verify((error, success) => {
+    if (error) {
+      console.error("Email transporter error:", error);
+    } else {
+      console.log("Email transporter ready");
+    }
+  });
 
-// HTML email template
-function getEmailTemplate(date) {
-  return `
-    <div style="font-family: Poppins, sans-serif; color:#333; line-height:1.6; max-width:600px; margin:auto; padding:20px; border-radius:10px; background-color:#fef6f6; box-shadow:0 5px 15px rgba(0,0,0,0.1);">
-      <h2 style="color:#ec4899;">Date Confirmation ☕</h2>
-      <p>Hello!</p>
-      <p>Thank you for confirming. Your coffee date has been scheduled on:</p>
-      <p style="font-weight:bold; font-size:1.2rem;">${date}</p>
-      <p>Looking forward to a warm conversation and good vibes! ✨</p>
-      <br>
-      <p style="color:#888;">- Sent with 💖 from your friendly app</p>
-    </div>
-  `;
-}
-
-// Routes for HTML files
-app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
-app.get("/main.html", (req, res) => res.sendFile(path.join(__dirname, "public", "main.html")));
-app.get("/date.html", (req, res) => res.sendFile(path.join(__dirname, "public", "date.html")));
-
-// Send-mail API
-app.post("/send-mail", async (req, res) => {
-  const { selectedDate } = req.body;
-  if (!selectedDate) {
-    return res.status(400).json({ success: false, message: "Date is required" });
+  // HTML email template
+  function getEmailTemplate(date) {
+    return `
+      <div style="font-family: Poppins, sans-serif; color:#333; line-height:1.6; max-width:600px; margin:auto; padding:20px; border-radius:10px; background-color:#fef6f6; box-shadow:0 5px 15px rgba(0,0,0,0.1);">
+        <h2 style="color:#ec4899;">Date Confirmation ☕</h2>
+        <p>Hello!</p>
+        <p>Thank you for confirming. Your coffee date has been scheduled on:</p>
+        <p style="font-weight:bold; font-size:1.2rem;">${date}</p>
+        <p>Looking forward to a warm conversation and good vibes! ✨</p>
+        <br>
+        <p style="color:#888;">- Sent with 💖 from your friendly app</p>
+      </div>
+    `;
   }
 
-  try {
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: "chiragadwani24@gmail.com", // recipient
-      cc: process.env.EMAIL_USER,      // CC yourself
-      subject: "Date Confirmation ☕",
-      html: getEmailTemplate(selectedDate),
-    });
+  // Routes for HTML files
+  app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
+  app.get("/main.html", (req, res) => res.sendFile(path.join(__dirname, "public", "main.html")));
+  app.get("/date.html", (req, res) => res.sendFile(path.join(__dirname, "public", "date.html")));
 
-    res.json({ success: true, message: "Email sent successfully!" });
-  } catch (error) {
-    console.error("Failed to send email:", error);
-    res.status(500).json({ success: false, message: "Failed to send email" });
-  }
-});
+  // Send-mail API
+  app.post("/send-mail", async (req, res) => {
+    const { selectedDate } = req.body;
+    if (!selectedDate) {
+      return res.status(400).json({ success: false, message: "Date is required" });
+    }
 
-// Catch-all route
-app.get("*", (req, res) => res.redirect("/"));
+    try {
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: "chiragadwani24@gmail.com", // recipient
+        cc: process.env.EMAIL_USER,      // CC yourself
+        subject: "Date Confirmation ☕",
+        html: getEmailTemplate(selectedDate),
+      });
 
-// Start server
-const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+      res.json({ success: true, message: "Email sent successfully!" });
+    } catch (error) {
+      console.error("Failed to send email:", error);
+      res.status(500).json({ success: false, message: "Failed to send email" });
+    }
+  });
+
+  // Catch-all route
+  app.get("*", (req, res) => res.redirect("/"));
+
+  // Start server
+  const PORT = process.env.PORT || 10000;
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
