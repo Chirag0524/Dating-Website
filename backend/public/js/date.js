@@ -15,7 +15,7 @@ confirmBtn.addEventListener("click", async () => {
   statusMsg.style.color = "#2563eb";
 
   try {
-    const response = await fetch("http://localhost:10000/send-mail", {
+    const response = await fetch("https://gift-for-you-cjv4.onrender.com/send-mail", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ selectedDate })
