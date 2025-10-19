@@ -2,6 +2,7 @@ const confirmBtn = document.getElementById("confirmBtn");
 const datePicker = document.getElementById("datePicker");
 const statusMsg = document.getElementById("statusMsg");
 const hurrayMsg = document.getElementById("hurrayMsg");
+const spamMsg = document.getElementById("spamMsg");
 
 confirmBtn.addEventListener("click", async () => {
   const selectedDate = datePicker.value;
@@ -33,6 +34,7 @@ confirmBtn.addEventListener("click", async () => {
 
       // Show Hurray message and fireworks
       hurrayMsg.style.opacity = 1;
+      spamMsg.style.opacity = 1;
       startConfetti();
       setTimeout(() => { hurrayMsg.style.opacity = 0; }, 5500);
     } else {
