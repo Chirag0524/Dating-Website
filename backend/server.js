@@ -5,21 +5,32 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 
-
 dotenv.config();
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
 
-// Nodemailer transporter
+// Nodemailer transporter (Gmail with App Password)
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: process.env.EMAIL_USER, // your Gmail
-    pass: process.env.EMAIL_PASS, // App Password
+    pass: process.env.EMAIL_PASS, // App Password, not regular password
   },
+});
+
+// Verify transporter on startup
+transporter.verify((err, success) => {
+  if (err) {
+    console.error("Email transporter error:", err);
+  } else {
+    console.log("Email transporter ready");
+  }
 });
 
 // HTML email template
@@ -36,19 +47,15 @@ function getEmailTemplate(date) {
     </div>
   `;
 }
-// Serve static frontend files
-app.use(express.static(path.join(__dirname, "public")));
 
-// Catch-all route to serve index.html for any frontend route
+// Routes for HTML files
 app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
 app.get("/main.html", (req, res) => res.sendFile(path.join(__dirname, "public", "main.html")));
 app.get("/date.html", (req, res) => res.sendFile(path.join(__dirname, "public", "date.html")));
 
-app.get("*", (req, res) => res.redirect("/"));
-// API endpoint to send email
+// Send-mail API
 app.post("/send-mail", async (req, res) => {
   const { selectedDate } = req.body;
-
   if (!selectedDate) {
     return res.status(400).json({ success: false, message: "Date is required" });
   }
@@ -64,10 +71,14 @@ app.post("/send-mail", async (req, res) => {
 
     res.json({ success: true, message: "Email sent successfully!" });
   } catch (error) {
-    console.error(error);
+    console.error("Failed to send email:", error);
     res.status(500).json({ success: false, message: "Failed to send email" });
   }
 });
 
+// Catch-all route
+app.get("*", (req, res) => res.redirect("/"));
+
+// Start server
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
