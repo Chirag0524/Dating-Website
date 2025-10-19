@@ -14,7 +14,7 @@ const __dirname = path.dirname(__filename);
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
-
+console.log("SendGrid Key:", process.env.SENDGRID_API_KEY ? "Loaded ✅" : "Missing ❌");
 // Set SendGrid API Key
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
