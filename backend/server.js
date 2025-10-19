@@ -2,9 +2,14 @@ import express from "express";
 import nodemailer from "nodemailer";
 import cors from "cors";
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+
 
 dotenv.config();
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 app.use(cors());
 app.use(express.json());
 
@@ -31,7 +36,13 @@ function getEmailTemplate(date) {
     </div>
   `;
 }
+// Serve static frontend files
+app.use(express.static(path.join(__dirname, "public")));
 
+// Catch-all route to serve index.html for any frontend route
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 // API endpoint to send email
 app.post("/send-mail", async (req, res) => {
   const { selectedDate } = req.body;
