@@ -40,9 +40,11 @@ function getEmailTemplate(date) {
 app.use(express.static(path.join(__dirname, "public")));
 
 // Catch-all route to serve index.html for any frontend route
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
+app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
+app.get("/main.html", (req, res) => res.sendFile(path.join(__dirname, "public", "main.html")));
+app.get("/date.html", (req, res) => res.sendFile(path.join(__dirname, "public", "date.html")));
+
+app.get("*", (req, res) => res.redirect("/"));
 // API endpoint to send email
 app.post("/send-mail", async (req, res) => {
   const { selectedDate } = req.body;
