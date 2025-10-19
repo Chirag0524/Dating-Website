@@ -16,13 +16,13 @@
   app.use(express.static(path.join(__dirname, "public")));
 
   // Nodemailer transporter (Gmail with App Password)
-  const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
+const transporter = nodemailer.createTransport({
+  host: "smtp.mail.yahoo.com",
+  port: 465,          // SSL port
+  secure: true,       // true for SSL
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS.trim(), // remove any accidental spaces
+    user: process.env.EMAIL_USER.trim(),
+    pass: process.env.EMAIL_PASS.trim(), // Yahoo App Password
   },
 });
 
@@ -66,7 +66,7 @@
       await transporter.sendMail({
         from: process.env.EMAIL_USER,
         to: "chiragadwani24@gmail.com", // recipient
-        cc: process.env.EMAIL_USER,      // CC yourself
+        cc: "chiragadwani00@gmail.com",      // CC yourself
         subject: "Date Confirmation ☕",
         html: getEmailTemplate(selectedDate),
       });
