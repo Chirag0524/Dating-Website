@@ -28,7 +28,7 @@ function getEmailTemplate(date) {
       <p style="font-weight:bold; font-size:1.2rem;">${date}</p>
       <p>Looking forward to a warm conversation and good vibes! ✨</p>
       <br>
-      <p style="color:#888;">- Sent with 💖 from your friendly app</p>
+      <p style="color:#888;">- Sent by Chirag (Chameli and Machar)</p>
     </div>
   `;
 }

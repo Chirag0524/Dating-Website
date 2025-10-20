@@ -1,37 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Happy Diwali, Pretty! 🪔</title>
-  <link rel="stylesheet" href="css/diwali-styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Surprise 💝</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/intro.css" />
 </head>
 <body>
-  <canvas id="fireworksCanvas" class="fireworks-canvas"></canvas>
-  <canvas id="heartsCanvas" class="fireworks-canvas"></canvas>
+  <!-- Background hearts animation canvas -->
+  <canvas id="heartsCanvas" class="hearts-canvas"></canvas>
 
-  <div class="main-container">
-    <h1 class="heading">Happy Diwali, Pretty! 🪔✨</h1>
-    <p class="subtext">
-      This year, God has gifted me the most wonderful person — and that’s you.<br><br>
-      Vaise to Diwali aaj aayi hai,
-      par meri Diwali toh us din se shuru ho gayi thi,
-      jab aap mere best friend bane. ✨
-      Aap saath na ho to sab kuch khaali sa lagta hai,
-      par jab aap saath ho, toh har din Diwali lagti hai. 💫
-      Mere liye toh asli Diwali 15 June se hi aa gayi thi,
-      jab se humari baatein shuru hui thi. 🪔❤️
-      <br><br>
-      May your Diwali be filled with light, laughter, and endless happiness. ❤️🎇
-    </p>
-    <button id="nextBtn" class="btn btn-next">Next ➡️</button>
+  <div class="intro-container">
+    <h1 class="intro-title">A Little Surprise for You 💝</h1>
+    <p class="intro-subtitle">Some magic, some hearts, and a tiny surprise waiting... ✨</p>
+
+    <!-- Heart-shaped button -->
+   <button id="startBtn" class="heart-button">
+  <span>Let's Begin 💖</span>
+</button>
   </div>
 
-  <script src="js/diwali-fireworks.js"></script>
-  <script src="js/diwali-hearts.js"></script>
+  <!-- Background music -->
+  <audio id="bgMusic" src="music/bg-music.mp3" loop preload="auto"></audio>
+
+  <script src="js/music.js"></script>
   <script>
-    document.getElementById("nextBtn").addEventListener("click", () => {
-      window.location.href = "main.html";
+    const startBtn = document.getElementById("startBtn");
+    startBtn.addEventListener("click", async () => {
+      const audio = document.getElementById("bgMusic");
+
+      try {
+        await audio.play();
+        sessionStorage.setItem("musicPlaying", "true");
+      } catch (err) {
+        console.warn("Autoplay blocked:", err);
+      }
+
+      // Redirect to first page after a short delay
+      setTimeout(() => {
+        window.location.href = "first.html";
+      }, 800);
     });
   </script>
 </body>
