@@ -48,7 +48,7 @@ app.post("/send-mail", async (req, res) => {
   const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}-${String(dateObj.getMonth() + 1).padStart(2, '0')}-${dateObj.getFullYear()}`;
 
   const msg = {
-    to: "chiragadwani24@gmail.com",        // recipient
+    to: "prettyvalecha@gmail.com",        // recipient
     cc: "chiragadwani00@gmail.com",        // CC yourself
     from: "chiragadwani00@gmail.com",      // verified sender in SendGrid
     subject: "Date Confirmation ☕",
