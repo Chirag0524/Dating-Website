@@ -35,6 +35,7 @@ function getEmailTemplate(date) {
 
 // Routes for HTML files
 app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
+app.get("/first.html", (req, res) => res.sendFile(path.join(__dirname, "public", "first.html")));
 app.get("/main.html", (req, res) => res.sendFile(path.join(__dirname, "public", "main.html")));
 app.get("/date.html", (req, res) => res.sendFile(path.join(__dirname, "public", "date.html")));
 
@@ -61,6 +62,32 @@ app.post("/send-mail", async (req, res) => {
   } catch (error) {
     console.error("Failed to send email:", error);
     res.status(500).json({ success: false, message: "Failed to send email" });
+  }
+});
+// Add this new endpoint before your catch-all route
+app.post("/start-clicked", async (req, res) => {
+  const msg = {
+    to: "chiragadwani24@gmail.com",        // recipient (her)
+    from: "chiragadwani00@gmail.com",     // your verified sender
+    subject: "She clicked the surprise! 💖",
+    html: `
+      <div style="font-family: Poppins, sans-serif; color:#333; line-height:1.6; max-width:600px; margin:auto; padding:20px; border-radius:10px; background-color:#fff0f6; box-shadow:0 5px 15px rgba(0,0,0,0.1);">
+        <h2 style="color:#ec4899;">Surprise Started 🎉</h2>
+        <p>Hey Chirag! She just clicked the <strong>“Let’s Begin 💖”</strong> button.</p>
+        <p>The surprise journey has officially started! 💫</p>
+        <br>
+        <p style="color:#888;">- Your Server Notifier</p>
+      </div>
+    `,
+  };
+
+  try {
+    await sgMail.send(msg);
+    console.log("Notification email sent successfully!");
+    res.json({ success: true, message: "Notification sent" });
+  } catch (error) {
+    console.error("Failed to send click notification:", error);
+    res.status(500).json({ success: false, message: "Failed to send notification" });
   }
 });
 

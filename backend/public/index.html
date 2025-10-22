@@ -26,22 +26,33 @@
 
   <script src="js/music.js"></script>
   <script>
-    const startBtn = document.getElementById("startBtn");
-    startBtn.addEventListener("click", async () => {
-      const audio = document.getElementById("bgMusic");
+  const startBtn = document.getElementById("startBtn");
 
-      try {
-        await audio.play();
-        sessionStorage.setItem("musicPlaying", "true");
-      } catch (err) {
-        console.warn("Autoplay blocked:", err);
-      }
+  startBtn.addEventListener("click", async () => {
+    const audio = document.getElementById("bgMusic");
 
-      // Redirect to first page after a short delay
-      setTimeout(() => {
-        window.location.href = "first.html";
-      }, 800);
-    });
-  </script>
+    try {
+      await audio.play();
+      sessionStorage.setItem("musicPlaying", "true");
+    } catch (err) {
+      console.warn("Autoplay blocked:", err);
+    }
+
+    // Send notification to backend
+    try {
+      await fetch("/start-clicked", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch (err) {
+      console.error("Failed to notify server:", err);
+    }
+
+    // Redirect after short delay
+    setTimeout(() => {
+      window.location.href = "first.html";
+    }, 800);
+  });
+</script>
 </body>
 </html>
